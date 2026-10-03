@@ -314,3 +314,42 @@ it('should ignore a nested droppable that is contained by the dragging item itse
 
   expect(result).toEqual(root.descriptor.id);
 });
+
+it('should keep a contained candidate when there is no non-contained containing candidate', () => {
+  const isolated: DroppableDimension = getDroppableDimension({
+    descriptor: {
+      id: 'isolated',
+      type: 'standard',
+      mode: 'standard',
+    },
+    borderBox: {
+      top: 100,
+      left: 100,
+      right: 260,
+      bottom: 260,
+    },
+  });
+
+  const dragging: DraggableDimension = getDraggableDimension({
+    descriptor: {
+      id: 'dragging',
+      index: 0,
+      type: isolated.descriptor.type,
+      droppableId: isolated.descriptor.id,
+    },
+    borderBox: {
+      top: 80,
+      left: 80,
+      right: 280,
+      bottom: 280,
+    },
+  });
+
+  const result = getDroppableOver({
+    pageBorderBox: dragging.page.borderBox,
+    draggable: dragging,
+    droppables: toDroppableMap([isolated]),
+  });
+
+  expect(result).toEqual(isolated.descriptor.id);
+});

@@ -244,15 +244,43 @@ export default function getDroppableOver({
   }
 
   // A draggable that visually contains a nested droppable (for example a group
-  // item containing a child list) should not treat that nested list as a
-  // destination for itself. Doing so creates self-nesting impacts and unstable
-  // placeholder geometry while dragging grouped containers.
+  // item containing a child list) should not treat that nested child list as a
+  // destination for itself when another overlapping ancestor candidate exists
+  // outside the dragging item. This avoids self-nesting impacts while still
+  // allowing legitimate drops onto isolated smaller lists.
   const candidatesExcludingOwnDescendants: DroppableDimension[] =
     candidates.filter((candidate: DroppableDimension): boolean => {
       const active: Rect | null = candidate.subject.active;
-      return Boolean(
-        active && !isContainedBy(draggable.page.borderBox, active),
+      if (!active) {
+        return false;
+      }
+
+      const isContainedByDragging: boolean = isContainedBy(
+        draggable.page.borderBox,
+        active,
       );
+
+      if (!isContainedByDragging) {
+        return true;
+      }
+
+      const hasNonContainedContainingCandidate: boolean = candidates.some(
+        (other: DroppableDimension): boolean => {
+          const otherActive: Rect | null = other.subject.active;
+
+          if (
+            other.descriptor.id === candidate.descriptor.id ||
+            !otherActive ||
+            !isContainedBy(otherActive, active)
+          ) {
+            return false;
+          }
+
+          return !isContainedBy(draggable.page.borderBox, otherActive);
+        },
+      );
+
+      return !hasNonContainedContainingCandidate;
     });
 
   const availableCandidates: DroppableDimension[] =

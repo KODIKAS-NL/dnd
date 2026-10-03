@@ -64,3 +64,38 @@ it('should compensate for transformed containing block ancestors', () => {
 
   document.body.removeChild(transformedParent);
 });
+
+it('should detect a containing block parent that becomes transformed after initial reads', () => {
+  const mapped: DraggingMapProps = getDraggingMapProps();
+
+  const parent: HTMLDivElement = document.createElement('div');
+  const draggingElement: HTMLDivElement = document.createElement('div');
+  parent.appendChild(draggingElement);
+  document.body.appendChild(parent);
+
+  const initialStyle = getStyle(mapped, draggingElement) as DraggingStyle;
+  expect(initialStyle.top).toBe(mapped.dimension.client.marginBox.top);
+  expect(initialStyle.left).toBe(mapped.dimension.client.marginBox.left);
+
+  parent.style.transform = 'translateY(10px)';
+  parent.getBoundingClientRect = (() =>
+    ({
+      top: 40,
+      left: 60,
+      right: 260,
+      bottom: 240,
+      width: 200,
+      height: 200,
+      x: 60,
+      y: 40,
+      toJSON: () => ({}),
+    }) as DOMRect) as typeof parent.getBoundingClientRect;
+
+  const transformedStyle = getStyle(mapped, draggingElement) as DraggingStyle;
+  expect(transformedStyle.top).toBe(mapped.dimension.client.marginBox.top - 40);
+  expect(transformedStyle.left).toBe(
+    mapped.dimension.client.marginBox.left - 60,
+  );
+
+  document.body.removeChild(parent);
+});

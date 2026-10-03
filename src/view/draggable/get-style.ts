@@ -60,6 +60,35 @@ const isContainingBlockParent = (el: HTMLElement): boolean => {
   );
 };
 
+const containingBlockParentCache: WeakMap<HTMLElement, HTMLElement> =
+  new WeakMap();
+
+const getContainingBlockParent = (
+  draggingElement: HTMLElement,
+): HTMLElement | null => {
+  const cached: HTMLElement | undefined =
+    containingBlockParentCache.get(draggingElement);
+
+  if (cached) {
+    if (cached.contains(draggingElement) && isContainingBlockParent(cached)) {
+      return cached;
+    }
+
+    containingBlockParentCache.delete(draggingElement);
+  }
+
+  let current: HTMLElement | null = draggingElement.parentElement;
+  while (current) {
+    if (isContainingBlockParent(current)) {
+      containingBlockParentCache.set(draggingElement, current);
+      return current;
+    }
+    current = current.parentElement;
+  }
+
+  return null;
+};
+
 const getContainingBlockOffset = (
   draggingElement?: HTMLElement | null,
 ): Position => {
@@ -67,19 +96,18 @@ const getContainingBlockOffset = (
     return origin;
   }
 
-  let current: HTMLElement | null = draggingElement.parentElement;
-  while (current) {
-    if (isContainingBlockParent(current)) {
-      const rect: DOMRect = current.getBoundingClientRect();
-      return {
-        x: rect.left,
-        y: rect.top,
-      };
-    }
-    current = current.parentElement;
+  const containingBlockParent: HTMLElement | null =
+    getContainingBlockParent(draggingElement);
+
+  if (!containingBlockParent) {
+    return origin;
   }
 
-  return origin;
+  const rect: DOMRect = containingBlockParent.getBoundingClientRect();
+  return {
+    x: rect.left,
+    y: rect.top,
+  };
 };
 
 function getDraggingStyle(
