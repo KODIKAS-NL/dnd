@@ -5,6 +5,8 @@
 
 <div align="center">
 
+> **⚠️ Fork Notice**: This fork contains changes made with the debugging help of GPT 5.3 Codex to support nested drop areas.
+
 **Beautiful** and **accessible** drag and drop for lists with [`React`](https://facebook.github.io/react/)
 
 [![CircleCI branch](https://img.shields.io/circleci/project/github/hello-pangea/dnd/main.svg)](https://circleci.com/gh/hello-pangea/dnd/tree/main)
@@ -41,9 +43,9 @@
 
 ## Get started 👩‍🏫
 
-Alex Reardon has created [a free course on `egghead.io` 🥚](https://egghead.io/courses/beautiful-and-accessible-drag-and-drop-with-react-beautiful-dnd) (using [react-beautiful-dnd](https://github.com/atlassian/react-beautiful-dnd)) to help you get started with `@hello-pangea/dnd` as quickly as possible.
+Alex Reardon has created [a free course on `egghead.io` 🥚](https://egghead.io/courses/beautiful-and-accessible-drag-and-drop-with-react-beautiful-dnd) (using [react-beautiful-dnd](https://githu[...]
 
-[![course-logo](https://user-images.githubusercontent.com/2182637/43372837-8c72d3f8-93e8-11e8-9d92-a82adde7718f.png)](https://egghead.io/courses/beautiful-and-accessible-drag-and-drop-with-react-beautiful-dnd)
+[![course-logo](https://user-images.githubusercontent.com/2182637/43372837-8c72d3f8-93e8-11e8-9d92-a82adde7718f.png)](https://egghead.io/courses/beautiful-and-accessible-drag-and-drop-with-react-b[...]
 
 ## Currently supported feature set ✅
 
@@ -54,7 +56,7 @@ Alex Reardon has created [a free course on `egghead.io` 🥚](https://egghead.io
 - [Combining items](/docs/guides/combining.md)
 - Mouse 🐭, keyboard 🎹♿️ and touch 👉📱 (mobile, tablet and so on) support
 - [Multi drag support](/docs/patterns/multi-drag.md)
-- Incredible screen reader support ♿️ - we provide an amazing experience for english screen readers out of the box 📦. We also provide complete customisation control and internationalisation support for those who need it 💖
+- Incredible screen reader support ♿️ - we provide an amazing experience for english screen readers out of the box 📦. We also provide complete customisation control and internationalisation[...]
 - [Conditional dragging](/docs/api/draggable.md#optional-props) and [conditional dropping](/docs/api/droppable.md#conditionally-dropping)
 - Multiple independent lists on the one page
 - Flexible item sizes - the draggable items can have different heights (vertical lists) or widths (horizontal lists)
@@ -73,14 +75,14 @@ Alex Reardon has created [a free course on `egghead.io` 🥚](https://egghead.io
 
 ## Motivation 🤔
 
-`@hello-pangea/dnd` exists to create beautiful drag and drop for lists that anyone can use - even people who cannot see. For a good overview of the history and motivations of the project you can take a look at these external resources:
+`@hello-pangea/dnd` exists to create beautiful drag and drop for lists that anyone can use - even people who cannot see. For a good overview of the history and motivations of the project you can t[...]
 
 - 📖 [Rethinking drag and drop](https://medium.com/@alexandereardon/rethinking-drag-and-drop-d9f5770b4e6b)
 - 🎧 [React podcast: fast, accessible and beautiful drag and drop](https://reactpodcast.simplecast.fm/17)
 
 ## Not for everyone ✌️
 
-There are a lot of libraries out there that allow for drag and drop interactions within React. Most notable of these is the amazing [`react-dnd`](https://github.com/react-dnd/react-dnd). It does an incredible job at providing a great set of drag and drop primitives which work especially well with the [wildly inconsistent](https://www.quirksmode.org/blog/archives/2009/09/the_html5_drag.html) html5 drag and drop feature. `@hello-pangea/dnd` is a higher level abstraction specifically built for lists (vertical, horizontal, movement between lists, nested lists and so on). Within that subset of functionality `@hello-pangea/dnd` offers a powerful, natural and beautiful drag and drop experience. However, it does not provide the breadth of functionality offered by `react-dnd`. One shortcoming is that grid layouts are not supported (yet). So `@hello-pangea/dnd` might not be for you depending on what your use case is.
+There are a lot of libraries out there that allow for drag and drop interactions within React. Most notable of these is the amazing [`react-dnd`](https://github.com/react-dnd/react-dnd). It does a[...]
 
 ## Documentation 📖
 
@@ -159,7 +161,7 @@ Alex Reardon [@alexandereardon](https://twitter.com/alexandereardon)
 
 - Gabriel Santerre [@100terres](https://github.com/100terres)
 - Reece Carolan [@Xhale1](https://github.com/Xhale1)
-- Many [@Atlassian](https://twitter.com/Atlassian)'s have contributed to the original [`react-beautiful-dnd`](https://github.com/atlassian/react-beautiful-dnd). _Atlassian is no longer involved with this project._
+- Many [@Atlassian](https://twitter.com/Atlassian)'s have contributed to the original [`react-beautiful-dnd`](https://github.com/atlassian/react-beautiful-dnd). _Atlassian is no longer involved w[...]
 
 ## Collaborators 🤝
 
