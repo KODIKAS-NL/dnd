@@ -134,7 +134,7 @@ const Draggable: React.FunctionComponent<Props> = (props) => {
   );
 
   const provided: DraggableProvided = useMemo(() => {
-    const style: DraggableStyle = getStyle(mapped);
+    const style: DraggableStyle = getStyle(mapped, getRef());
     const onTransitionEnd =
       mapped.type === 'DRAGGING' && mapped.dropping ? onMoveEnd : undefined;
 
@@ -150,7 +150,15 @@ const Draggable: React.FunctionComponent<Props> = (props) => {
     };
 
     return result;
-  }, [contextId, dragHandleProps, draggableId, mapped, onMoveEnd, setRef]);
+  }, [
+    contextId,
+    dragHandleProps,
+    draggableId,
+    getRef,
+    mapped,
+    onMoveEnd,
+    setRef,
+  ]);
 
   const rubric: DraggableRubric = useMemo(
     () => ({

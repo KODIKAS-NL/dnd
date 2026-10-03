@@ -31,19 +31,22 @@ const getCrossAxisBorderBoxCenter = (
 export const goAfter = ({ axis, moveRelativeTo, isMoving }: Args): Position =>
   patch(
     axis.line,
-    // start measuring from the end of the target
-    moveRelativeTo.marginBox[axis.end] +
+    // Use the target border box as the insertion anchor. The dragging item is
+    // positioned from its own border-box center, and the margin-box anchor makes
+    // the overlay drift when moving across nested container boundaries.
+    moveRelativeTo.borderBox[axis.end] +
       distanceFromStartToBorderBoxCenter(axis, isMoving),
-    getCrossAxisBorderBoxCenter(axis, moveRelativeTo.marginBox, isMoving),
+    getCrossAxisBorderBoxCenter(axis, moveRelativeTo.borderBox, isMoving),
   );
 
 export const goBefore = ({ axis, moveRelativeTo, isMoving }: Args): Position =>
   patch(
     axis.line,
-    // start measuring from the start of the target
-    moveRelativeTo.marginBox[axis.start] -
+    // Use the target border box for the pre-insert anchor to keep the dragged
+    // item's visual offset stable above nested parents and groups.
+    moveRelativeTo.borderBox[axis.start] -
       distanceFromEndToBorderBoxCenter(axis, isMoving),
-    getCrossAxisBorderBoxCenter(axis, moveRelativeTo.marginBox, isMoving),
+    getCrossAxisBorderBoxCenter(axis, moveRelativeTo.borderBox, isMoving),
   );
 
 interface GoIntoArgs {

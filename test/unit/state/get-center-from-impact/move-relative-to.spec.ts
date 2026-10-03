@@ -45,6 +45,9 @@ const isMoving: BoxModel = createBox({
 const distanceFromStartToCenter = (axis: Axis, box: BoxModel): number =>
   box.margin[axis.start] + box.borderBox[axis.size] / 2;
 
+const distanceFromStartToBorderBoxCenter = (axis: Axis, box: BoxModel): number =>
+  box.margin[axis.start] + box.borderBox[axis.size] / 2;
+
 const distanceFromEndToCenter = (axis: Axis, box: BoxModel): number =>
   box.margin[axis.end] + box.borderBox[axis.size] / 2;
 
@@ -59,12 +62,11 @@ const distanceFromEndToCenter = (axis: Axis, box: BoxModel): number =>
 
       const expected: Position = patch(
         axis.line,
-        // start at the start of the item we are moving relative to
-        moveRelativeTo.marginBox[axis.start] -
-          // add the space from the end of the dragging item to its center
+        // align against the target border box so nested parents/groups do not
+        // add an extra offset when the pointer crosses upward past the parent.
+        moveRelativeTo.borderBox[axis.start] -
           distanceFromEndToCenter(axis, isMoving),
-        // start at the cross axis start of the item we are moving relative to
-        moveRelativeTo.marginBox[axis.crossAxisStart] +
+        moveRelativeTo.borderBox[axis.crossAxisStart] +
           isMoving.margin[axis.crossAxisStart] +
           isMoving.borderBox[axis.crossAxisSize] / 2,
       );
@@ -81,12 +83,11 @@ const distanceFromEndToCenter = (axis: Axis, box: BoxModel): number =>
 
       const expected: Position = patch(
         axis.line,
-        // start at the end of the margin box
-        moveRelativeTo.marginBox[axis.end] +
-          // add the distance to the start of the target center
-          distanceFromStartToCenter(axis, isMoving),
-        // start at the cross axis start of the item we are moving relative to
-        moveRelativeTo.marginBox[axis.crossAxisStart] +
+        // align against the target border box so nested parents/groups do not
+        // add an extra offset when the pointer crosses upward past the parent.
+        moveRelativeTo.borderBox[axis.end] +
+          distanceFromStartToBorderBoxCenter(axis, isMoving),
+        moveRelativeTo.borderBox[axis.crossAxisStart] +
           isMoving.margin[axis.crossAxisStart] +
           isMoving.borderBox[axis.crossAxisSize] / 2,
       );

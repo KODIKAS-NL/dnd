@@ -139,3 +139,178 @@ it('should prefer the second furthest away droppable when multiple lists are hit
 
   expect(result).toEqual(droppableSecond.descriptor.id);
 });
+
+it('should prefer the smallest droppable containing the pointer center when nested droppables overlap', () => {
+  const root: DroppableDimension = getDroppableDimension({
+    descriptor: {
+      id: 'root',
+      type: 'standard',
+      mode: 'standard',
+    },
+    borderBox: {
+      top: 0,
+      left: 0,
+      right: 300,
+      bottom: 300,
+    },
+  });
+
+  const parent: DroppableDimension = getDroppableDimension({
+    descriptor: {
+      id: 'parent',
+      type: 'standard',
+      mode: 'standard',
+    },
+    borderBox: {
+      top: 50,
+      left: 50,
+      right: 250,
+      bottom: 250,
+    },
+  });
+
+  const child: DroppableDimension = getDroppableDimension({
+    descriptor: {
+      id: 'child',
+      type: 'standard',
+      mode: 'standard',
+    },
+    borderBox: {
+      top: 100,
+      left: 100,
+      right: 200,
+      bottom: 200,
+    },
+  });
+
+  const dragging: DraggableDimension = getDraggableDimension({
+    descriptor: {
+      id: 'dragging',
+      index: 0,
+      type: root.descriptor.type,
+      droppableId: root.descriptor.id,
+    },
+    borderBox: {
+      top: 130,
+      left: 130,
+      right: 170,
+      bottom: 170,
+    },
+  });
+
+  const pageBorderBox: Rect = dragging.page.borderBox;
+
+  const result = getDroppableOver({
+    pageBorderBox,
+    draggable: dragging,
+    droppables: toDroppableMap([root, parent, child]),
+  });
+
+  expect(result).toEqual(child.descriptor.id);
+});
+
+it('should prefer the closest nested droppable when the pointer is positioned just above a parent droppable', () => {
+  const root: DroppableDimension = getDroppableDimension({
+    descriptor: {
+      id: 'root',
+      type: 'standard',
+      mode: 'standard',
+    },
+    borderBox: {
+      top: 0,
+      left: 0,
+      right: 400,
+      bottom: 400,
+    },
+  });
+
+  const parent: DroppableDimension = getDroppableDimension({
+    descriptor: {
+      id: 'parent',
+      type: 'standard',
+      mode: 'standard',
+    },
+    borderBox: {
+      top: 100,
+      left: 50,
+      right: 250,
+      bottom: 250,
+    },
+  });
+
+  const dragging: DraggableDimension = getDraggableDimension({
+    descriptor: {
+      id: 'dragging',
+      index: 0,
+      type: root.descriptor.type,
+      droppableId: root.descriptor.id,
+    },
+    borderBox: {
+      top: 60,
+      left: 120,
+      right: 180,
+      bottom: 120,
+    },
+  });
+
+  const result = getDroppableOver({
+    pageBorderBox: dragging.page.borderBox,
+    draggable: dragging,
+    droppables: toDroppableMap([root, parent]),
+  });
+
+  expect(result).toEqual(parent.descriptor.id);
+});
+
+it('should ignore a nested droppable that is contained by the dragging item itself', () => {
+  const root: DroppableDimension = getDroppableDimension({
+    descriptor: {
+      id: 'root',
+      type: 'standard',
+      mode: 'standard',
+    },
+    borderBox: {
+      top: 0,
+      left: 0,
+      right: 500,
+      bottom: 500,
+    },
+  });
+
+  const nestedInsideDragging: DroppableDimension = getDroppableDimension({
+    descriptor: {
+      id: 'nested-inside-dragging',
+      type: 'standard',
+      mode: 'standard',
+    },
+    borderBox: {
+      top: 150,
+      left: 150,
+      right: 300,
+      bottom: 300,
+    },
+  });
+
+  const draggingContainer: DraggableDimension = getDraggableDimension({
+    descriptor: {
+      id: 'dragging-container',
+      index: 0,
+      type: root.descriptor.type,
+      droppableId: root.descriptor.id,
+    },
+    borderBox: {
+      top: 100,
+      left: 100,
+      right: 350,
+      bottom: 350,
+    },
+  });
+
+  const result = getDroppableOver({
+    pageBorderBox: draggingContainer.page.borderBox,
+    draggable: draggingContainer,
+    droppables: toDroppableMap([root, nestedInsideDragging]),
+  });
+
+  expect(result).toEqual(root.descriptor.id);
+});

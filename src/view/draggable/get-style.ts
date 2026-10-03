@@ -1,4 +1,4 @@
-import type { BoxModel } from 'css-box-model';
+import type { BoxModel, Position } from 'css-box-model';
 import { combine, transforms, transitions } from '../../animation';
 import type { DraggableDimension } from '../../types';
 import type {
@@ -49,7 +49,43 @@ const getShouldDraggingAnimate = (dragging: DraggingMapProps): boolean => {
   return dragging.mode === 'SNAP';
 };
 
-function getDraggingStyle(dragging: DraggingMapProps): DraggingStyle {
+const origin: Position = { x: 0, y: 0 };
+
+const isContainingBlockParent = (el: HTMLElement): boolean => {
+  const style: CSSStyleDeclaration = window.getComputedStyle(el);
+  return (
+    style.transform !== 'none' ||
+    style.perspective !== 'none' ||
+    style.filter !== 'none'
+  );
+};
+
+const getContainingBlockOffset = (
+  draggingElement?: HTMLElement | null,
+): Position => {
+  if (!draggingElement || typeof window === 'undefined') {
+    return origin;
+  }
+
+  let current: HTMLElement | null = draggingElement.parentElement;
+  while (current) {
+    if (isContainingBlockParent(current)) {
+      const rect: DOMRect = current.getBoundingClientRect();
+      return {
+        x: rect.left,
+        y: rect.top,
+      };
+    }
+    current = current.parentElement;
+  }
+
+  return origin;
+};
+
+function getDraggingStyle(
+  dragging: DraggingMapProps,
+  draggingElement?: HTMLElement | null,
+): DraggingStyle {
   const dimension: DraggableDimension = dragging.dimension;
   const box: BoxModel = dimension.client;
   const { offset, combineWith, dropping } = dragging;
@@ -58,6 +94,8 @@ function getDraggingStyle(dragging: DraggingMapProps): DraggingStyle {
 
   const shouldAnimate: boolean = getShouldDraggingAnimate(dragging);
   const isDropAnimating = Boolean(dropping);
+  const containingBlockOffset: Position =
+    getContainingBlockOffset(draggingElement);
 
   const transform: string | undefined = isDropAnimating
     ? transforms.drop(offset, isCombining)
@@ -67,8 +105,12 @@ function getDraggingStyle(dragging: DraggingMapProps): DraggingStyle {
     // ## Placement
     position: 'fixed',
     // As we are applying the margins we need to align to the start of the marginBox
-    top: box.marginBox.top,
-    left: box.marginBox.left,
+    // Fixed-position draggables are visually offset if an ancestor becomes a
+    // transform containing block (e.g. displaced nested groups). Compensate by
+    // subtracting the containing block origin so the dragged item stays under
+    // the pointer.
+    top: box.marginBox.top - containingBlockOffset.y,
+    left: box.marginBox.left - containingBlockOffset.x,
 
     // ## Sizing
     // Locking these down as pulling the node out of the DOM could cause it to change size
@@ -101,8 +143,11 @@ function getSecondaryStyle(secondary: SecondaryMapProps): NotDraggingStyle {
   };
 }
 
-export default function getStyle(mapped: MappedProps): DraggableStyle {
+export default function getStyle(
+  mapped: MappedProps,
+  draggingElement?: HTMLElement | null,
+): DraggableStyle {
   return mapped.type === 'DRAGGING'
-    ? getDraggingStyle(mapped)
+    ? getDraggingStyle(mapped, draggingElement)
     : getSecondaryStyle(mapped);
 }
