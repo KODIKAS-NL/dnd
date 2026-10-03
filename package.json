@@ -1,5 +1,5 @@
 {
-  "name": "@hello-pangea/dnd",
+  "name": "@kodikas-nl/dnd",
   "version": "18.0.1",
   "private": false,
   "description": "Beautiful and accessible drag and drop for lists with React",
@@ -22,10 +22,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/hello-pangea/dnd.git"
+    "url": "https://github.com/KODIKAS-NL/dnd.git"
   },
   "bugs": {
-    "url": "https://github.com/hello-pangea/dnd/issues"
+    "url": "https://github.com/KODIKAS-NL/dnd/issues"
   },
   "main": "dist/dnd.cjs.js",
   "module": "dist/dnd.esm.js",
@@ -36,6 +36,7 @@
     "/src"
   ],
   "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
     "access": "public"
   },
   "config": {
